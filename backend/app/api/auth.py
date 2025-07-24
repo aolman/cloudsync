@@ -1,23 +1,30 @@
 from ..models.user_models import UserCreate, UserLogin, UserOut
 from ..core.security import hash_password, verify_password, create_token
-from starlite import post, Router, HTTPException
+from litestar import Controller, post
+from litestar.exceptions import HTTPException
 
 fake_users_db = {}
 
-@post("/register", tags=["Auth"])
-async def register(user: UserCreate) -> UserOut:
-    if user.email in fake_users_db:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    hashed = hash_password(user.password)
-    fake_users_db[user.email] = {"email": user.email, "hashed": hashed}
-    return UserOut(id=len(fake_users_db), email=user.email)
+class AuthController(Controller):
+    path = "/auth"
+    tags = ["Auth"]
+    
+    @post("/register")
+    async def register(self, data: UserCreate) -> UserOut:
+        if data.email in fake_users_db:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        hashed = hash_password(data.password)
+        fake_users_db[data.email] = {"email": data.email, "hashed": hashed}
+        return UserOut(id=len(fake_users_db), email=data.email)
 
-@post("/login", tags=["Auth"])
-async def login(user: UserLogin) -> dict:
-    db_user = fake_users_db.get(user.email)
-    if not db_user or not verify_password(user.password, db_user["hashed"]):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    token = create_token({"sub": user.email})
-    return {"access_token": token, "token_type": "bearer"}
+    @post("/login")
+    async def login(self, data: UserLogin) -> dict:
+        db_user = fake_users_db.get(data.email)
+        if not db_user or not verify_password(data.password, db_user["hashed"]):
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        token = create_token({"sub": data.email})
+        return {"access_token": token, "token_type": "bearer"}
 
-auth_router = Router(path="/auth", route_handlers=[register, login])
+# Now you just register the controller instead of individual route handlers
+auth_controller = AuthController

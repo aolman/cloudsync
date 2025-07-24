@@ -1,4 +1,4 @@
-from starlite import Starlite
-from app.api.auth import auth_router
+from litestar import Litestar
+from app.api.auth import auth_controller
 
-app = Starlite(route_handlers=[auth_router])
+app = Litestar(route_handlers=[auth_controller])

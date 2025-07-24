@@ -1,6 +1,7 @@
-fastapi
 uvicorn
 passlib[bcrypt]
 pydantic
 pyjwt
 python-dotenv
+litestar[standard]
+bcrypt
