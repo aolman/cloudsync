@@ -33,7 +33,7 @@ class S3Manager:
         except NoCredentialsError:
             raise ValueError("AWS credentials not found. Check your environment variables.")
         except ClientError as e:
-            if e.respose['Error']['Code'] == '404':
+            if e.response['Error']['Code'] == '404':
                 raise ValueError(f"S3 bucket '{self.bucket_name}' does not exist")
             raise e
     
@@ -60,7 +60,7 @@ class S3Manager:
             )
             logger.info(f"Successfully uploaded file to S3: {s3_key}")
             return True
-        except Client Error as e:
+        except ClientError as e:
             logger.error(f"Failed to upload file to S3: {e}")
             return False
 
