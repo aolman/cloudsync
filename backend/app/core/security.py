@@ -10,10 +10,10 @@ load_dotenv()
 def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()
     pw_bytes = password.encode('utf-8')
-    return bcrypt.hashpw(pw_bytes, salt)
+    return bcrypt.hashpw(pw_bytes, salt).decode('utf-8')
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password)
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def create_token(data: dict, expires_delta: timedelta=None) -> str:
     to_encode = data.copy()

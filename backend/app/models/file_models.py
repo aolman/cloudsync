@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from uuid import UUID, uuid4
 
@@ -17,7 +17,7 @@ class FileMetadata(BaseModel):
     size: int = Field(..., gt=0, description="File size in bytes")
     owner_email: str = Field(..., description="Email of the user who uploaded the file")
     s3_key: str = Field(..., description="Path/key where file is stored in S3")
-    upload_date: datetime = Field(default_factory=datetime.utcnow, description="When file was uploaded")
+    upload_date: datetime = Field(default_factory=datetime.now(timezone.utc), description="When file was uploaded")
     is_public: bool = Field(default=False, description="Whether file can be accessed without authentication")
     
     # This allows the model to work with database ORMs

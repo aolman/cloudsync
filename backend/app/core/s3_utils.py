@@ -12,11 +12,6 @@ logger = logging.getLogger(__name__)
 class S3Manager:
 
     def __init__(self):
-        # ADD TO .ENV FILE
-        # AWS_ACCESS_KEY_ID
-        # AWS_SECRET_ACCESS_KEY
-        # AWS_REGION
-        # S3_BUCKET_NAME
         self.bucket_name = os.getenv("S3_BUCKET_NAME")
         if not self.bucket_name:
             raise ValueError("S3_BUCKET_NAME env variable required")
@@ -26,7 +21,7 @@ class S3Manager:
                 's3',
                 aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
                 aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-                region_name=os.getenv("AWS_REGION", "us-east-1")
+                region_name=os.getenv("AWS_REGION")
             )
             self.s3_client.head_bucket(Bucket=self.bucket_name)
             logger.info(f"Successfully connected to S3 bucket: {self.bucket_name}")

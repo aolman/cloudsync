@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String, Integer, Boolean, DateTime, Text, ForeignKey
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID, uuid4
 import os
 
@@ -40,7 +40,7 @@ class FileRecord(Base):
     size: Mapped[int] = mapped_column(Integer)
     s3_key: Mapped[str] = mapped_column(String(500), unique=True)  # Path in S3
     owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
-    upload_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    upload_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(timezone.utc))
     is_public: Mapped[bool] = mapped_column(Boolean, default=False)
     
     __table_args__ = (
