@@ -3,7 +3,7 @@ import os
 from botocore.exceptions import ClientError, NoCredentialsError
 from typing import Optional, BinaryIO
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 import logging
 
 logger = logging.getLogger(__name__)
@@ -48,7 +48,7 @@ class S3Manager:
                 ExtraArgs={
                     'ContentType': content_type,
                     'Metadata': {
-                        'upload_date': datetime.utcnow().isoformat(),
+                        'upload_date': datetime.now().isoformat(),
                         'original_content_type': content_type
                     }
                 }

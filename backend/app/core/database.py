@@ -40,7 +40,7 @@ class FileRecord(Base):
     size: Mapped[int] = mapped_column(Integer)
     s3_key: Mapped[str] = mapped_column(String(500), unique=True)  # Path in S3
     owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
-    upload_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(timezone.utc))
+    upload_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
     is_public: Mapped[bool] = mapped_column(Boolean, default=False)
     
     __table_args__ = (

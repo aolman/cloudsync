@@ -1,5 +1,5 @@
 import os
-from litestar import Controller, post, get, delete
+from litestar import Request, Controller, post, get, delete
 from litestar.params import Body
 from litestar.datastructures import UploadFile
 from ..models.user_models import UserOut
@@ -22,8 +22,8 @@ class FileController(Controller):
     @post("/upload")
     async def upload_file(
         self,
+        request: Request,
         current_user: UserOut,
-        file: UploadFile = Body(media_type="multipart/form-data"),
         db_session: AsyncSession = Provide(get_db_session)
     ) -> FileOut:
         """
@@ -35,11 +35,21 @@ class FileController(Controller):
         """
         
         # Validate file data (this should be done in the model)
-        if not file.filename or not file.content_type or file.size <= 0:
+        form_data = await request.form()
+        file = form_data.get("file")
+
+        file.file.seek(0, 2)
+        size = file.file.tell()
+        file.file.seek(0)
+
+        if not file:
+            raise HTTPException(status_code=400, detail="No file provided")
+
+        if not file.filename or not file.content_type or size < 0:
             raise HTTPException(status_code=400, detail="Invalid file data")
         
         MAX_FILE_SIZE_BYTES = int(os.getenv("MAX_FILE_SIZE_MB")) * 1024 * 1024
-        if file.size > MAX_FILE_SIZE_BYTES:
+        if size > MAX_FILE_SIZE_BYTES:
             raise HTTPException(status_code=413, detail="File too large")
         
         # Create new file metadata
@@ -47,7 +57,7 @@ class FileController(Controller):
             id=uuid4(),
             filename=file.filename,
             content_type=file.content_type,
-            size=file.size,
+            size=size,
             owner_id=current_user.id,
             s3_key=s3_manager.generate_s3_key(current_user.email, file.filename),
             is_public=False
