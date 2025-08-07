@@ -60,14 +60,21 @@ class S3Manager:
             return False
 
     # generate presigned url for downloading file, expire after 1 hr default
-    def generate_presigned_url(self, s3_key: str, expiration: int=3600) -> Optional[str]:
+    def generate_presigned_url(self, s3_key: str, filename: str=None, expiration: int=3600) -> Optional[str]:
         try:
+            params = {
+                'Bucket': self.bucket_name,
+                'Key': s3_key
+            }
+
+            if filename:
+                params['ResponseContentDisposition'] = f'attachment; filename="{filename}"'
+            else:
+                params['ResponseContentDisposition'] = 'attachment'
+
             url = self.s3_client.generate_presigned_url(
                 'get_object',
-                Params={
-                    'Bucket':self.bucket_name,
-                    'Key': s3_key
-                },
+                Params=params,
                 ExpiresIn=expiration
             )
             logger.info(f"Generated presigned URL for: {s3_key}")

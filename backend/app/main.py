@@ -14,7 +14,7 @@ app = Litestar(
     route_handlers=[AuthController, FileController],
     dependencies={"db_session": get_db_session},  # Manual dependency injection
     cors_config=CORSConfig(
-        allow_origins=["http://localhost:3000"],  # Your frontend URL
+        allow_origins=["http://localhost:3000", "http://localhost:5173"],
         allow_methods=["GET", "POST", "PUT", "DELETE"],
         allow_headers=["*"]
     ),

@@ -166,7 +166,7 @@ class FileController(Controller):
         
         if not file_record:
             raise HTTPException(status_code=404, detail="File not found or access denied")
-        presigned_url = s3_manager.generate_presigned_url(file_record.s3_key)
+        presigned_url = s3_manager.generate_presigned_url(file_record.s3_key, file_record.filename)
         if not presigned_url:
             raise HTTPException(status_code=500, detail="Failed to generate download URL")
         return {"download_url": presigned_url}
