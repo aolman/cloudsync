@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
+import Dashboard from '../components/Dashboard/Dashboard.tsx'
 
 const Home: React.FC = () => {
     const { user, logout } = useAuth();
@@ -29,15 +30,8 @@ const Home: React.FC = () => {
             </header>
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <div className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                        Welcome to CloudSync!
-                    </h2>
-                    <p className="text-gray-600">
-                        Your file management dashboard will appear here soon.
-                    </p>
-                </div>
+            <main>
+                <Dashboard />
             </main>
         </div>
     );

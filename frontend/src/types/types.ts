@@ -23,6 +23,14 @@ export interface RegisterResponse {
     is_active: boolean;
 }
 
+export interface UploadFile {
+    id: string;
+    file: File;
+    progress: number;
+    status: 'pending' | 'uploading' | 'success' | 'error';
+    error?: string;
+}
+
 export interface FileItem {
     id: string;
     filename: string;
